@@ -30,11 +30,11 @@ function FeedPage() {
     setPosts([newPost, ...posts]); // newest post on top
   };
     const handleLike = (id) => {
-      setPosts(
-          posts.map(post =>
-              post.id === id ? { ...post, likes: post.likes + 1 } : post
-          )
-      );
+      if (likedPosts.has(id)) return;
+      setPosts(posts.map(post =>
+          (post.id === id ? { ...post, likes: post.likes + 1 } : post)));
+      setLikedPosts(new Set([...likedPosts, id]));
+
     };
 
     const handleAddComment = (id, comment) => {
@@ -50,6 +50,8 @@ function FeedPage() {
     const handleDelete = (id) => {
       setPosts(posts.filter(post => post.id !== id));
     };
+
+    const [likedPosts, setLikedPosts] = useState(new Set());
 
 
     return (
