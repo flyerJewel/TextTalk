@@ -1,7 +1,7 @@
 import {useState} from "react";
 
 function Post({ data, onLike, onComment, onDelete }) {
-    const { username, text, timestamp, likes, comments } = data;
+    const { username, text, timestamp, likes, comments, picture } = data;
     const [commentText, setCommentText] = useState('');
 
     const handleSubmit = (e) => {
@@ -23,7 +23,12 @@ function Post({ data, onLike, onComment, onDelete }) {
       }}
     >
       <div style={{ marginBottom: '0.5rem' }}>
-        <strong>@{username}</strong>
+          <img
+              src={picture || 'https://via.placeholder.com/40'}
+              alt="profile"
+              style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }}
+          />
+          <strong>@{username}</strong>
         <span style={{ color: '#888', marginLeft: '10px', fontSize: '0.9rem' }}>
           {timestamp}
         </span>

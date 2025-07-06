@@ -19,11 +19,14 @@ function FeedPage() {
   }, [posts]);
 
   const handleAddPost = (text) => {
+    const savedProfile = JSON.parse(localStorage.getItem('profile'));
+
     const newPost = {
       id: Date.now(),
       username: 'julian_dev', // mock user
       text: text,
       timestamp: new Date().toLocaleString(),
+      picture: savedProfile?.picture||null,
       likes: 0,
       comments:[]
     };
