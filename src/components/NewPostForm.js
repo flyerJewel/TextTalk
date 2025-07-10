@@ -2,13 +2,28 @@ import { useState } from 'react';
 
 function NewPostForm({ onPost }) {
   const [text, setText] = useState('');
+  const [picture, setPicture] = useState('');
+
+  const [image, setImage] = useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+    }
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (text.trim() === '') return;
 
-    onPost(text);
+    onPost(text, image);
     setText('');
+    setImage(null);
   };
 
   return (
@@ -21,7 +36,10 @@ function NewPostForm({ onPost }) {
         placeholder="What's happening?"
         style={{ width: '100%', padding: '10px' }}
       />
-      <div style={{ textAlign: 'right' }}>
+        <input type="file" accept="image/*" onChange={handleImageUpload} />
+
+
+        <div style={{ textAlign: 'right' }}>
         <small>{text.length}/280</small>
       </div>
       <button

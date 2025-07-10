@@ -5,6 +5,20 @@ import Post from './components/Post';
 function FeedPage() {
   const [posts, setPosts] = useState([]);
 
+  const [image, setImage] = useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
   // load posts from local storage
   useEffect(() => {
     const saved = localStorage.getItem('posts');
@@ -18,13 +32,14 @@ function FeedPage() {
     localStorage.setItem('posts', JSON.stringify(posts));
   }, [posts]);
 
-  const handleAddPost = (text) => {
+  const handleAddPost = (text,imageData) => {
     const savedProfile = JSON.parse(localStorage.getItem('profile'));
 
     const newPost = {
       id: Date.now(),
       username: 'julian_dev', // mock user
       text: text,
+      image: imageData,
       timestamp: new Date().toLocaleString(),
       picture: savedProfile?.picture||null,
       likes: 0,
@@ -67,6 +82,7 @@ function FeedPage() {
         posts.map((post) => <Post
             key={post.id}
             data={post}
+            image={image && <img src={'data.image'} alt="Post visual" style={{ maxWidth: '100%' }} />}
             onLike={() =>handleLike(post.id)}
             onComment={(comment) => handleAddComment(post.id, comment)}
             onDelete={() => handleDelete(post.id)}

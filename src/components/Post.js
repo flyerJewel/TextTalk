@@ -1,14 +1,16 @@
 import {useState} from "react";
 
-function Post({ data, onLike, onComment, onDelete }) {
-    const { username, text, timestamp, likes, comments, picture } = data;
+function Post({ data ,onLike, onComment, onDelete,  }) {
+    const { username, text, timestamp, likes, comments, picture, image } = data;
     const [commentText, setCommentText] = useState('');
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (commentText.trim() !== '') {
             onComment(commentText.trim());
             setCommentText('');
+
         }
     };
 
@@ -29,10 +31,16 @@ function Post({ data, onLike, onComment, onDelete }) {
               style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }}
           />
           <strong>@{username}</strong>
+          {image && (
+              <img src={image} alt="post" style={{ width: '100%', maxWidth: '300px', borderRadius: '10px', marginTop: '0.5rem' }}
+              />
+          )}
         <span style={{ color: '#888', marginLeft: '10px', fontSize: '0.9rem' }}>
           {timestamp}
         </span>
       </div>
+
+
       <p style={{ margin: 0 }}>{text}</p>
         <div style={{ marginTop: '0.5rem' }}>
             <button onClick={onLike}>❤️ {likes}</button>
@@ -47,6 +55,7 @@ function Post({ data, onLike, onComment, onDelete }) {
                 onChange={(e) => setCommentText(e.target.value)}
                 style={{ width: '80%', padding: '5px' }}
             />
+
             <button type="submit" style={{ marginLeft: '0.5rem' }}>Post</button>
         </form>
 
