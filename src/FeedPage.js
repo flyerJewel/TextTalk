@@ -73,8 +73,17 @@ function FeedPage() {
 
 
     return (
-      <div style={{ maxWidth: '600px', margin: '2rem auto' }}>
-      <h2>Home</h2>
+
+      <div className="max-w-xl mx-auto mt-8 px-4">
+      <div  className="bg-white border border-gray-300 rounded-xl shadow-md p-4 mb-6">
+        <h2 className="text-2xl font-bold mb-4 text-center mb-4">Nav</h2>
+        <div className="flex jsutify-around">
+        <a href="/profile" className="text-blue-500 font-semibold hover:underline">Profile  </a>
+        <a href="/" className="text-blue-500 font-semibold hover:underline">Home  </a>
+
+        </div>
+          </div>
+
       <NewPostForm onPost={handleAddPost} />
       {posts.length === 0 ? (
         <p style={{ textAlign: 'center', marginTop: '2rem' }}>No posts yet. Start tweeting!</p>

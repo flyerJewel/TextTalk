@@ -1,10 +1,14 @@
 body{
   background-color: #1DA1F2 ;
-  background-image: url('./logo.svg');
+  background-image: url('./newlogo.png');
   background-position: top left;
   background-repeat: no-repeat;
   background-size: 10%;
   font-family: monospace;
+}
+h2 {
+  /*border: 5px solid orange; !* Sets a 2px solid orange border *!*/
+  /*padding: 10px; !* Adds space between the content and the border *!*/
 }
 
 .App {
