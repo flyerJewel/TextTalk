@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [newUsername, setNewUsername] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+
     const [error, setError] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(
         () => localStorage.getItem("isLoggedIn") === "true"
@@ -15,32 +18,57 @@ function LoginPage() {
         e.preventDefault();
 
         const trimmed = username.trim();
+        const users = JSON.parse(localStorage.getItem('users')) || {};
 
-        if (trimmed === "Julian_dev" && password === "secret") {
-            // get user database
-            const users = JSON.parse(localStorage.getItem('users')) || {};
-
-            // Create user profile if none exists
-            if (!users[trimmed]) {
-                users[trimmed] = {
-                    username: trimmed,
-                    bio: 'New user.',
-                    picture: null,
-                };
-            }
-
-            // Save user state
-            localStorage.setItem('users', JSON.stringify(users));
+        if (users[trimmed] && users[trimmed].password === password) {
+            // Login success: save user info & login state
             localStorage.setItem('currentUser', trimmed);
-            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem('isLoggedIn', 'true');
             setIsLoggedIn(true);
             setError('');
-            navigate('/profile'); // or '/feed'
+            navigate('/profile');
         } else {
             setError("Incorrect username or password.");
         }
+
     };
 
+    const handleCreateAccount = (e) => {
+        e.preventDefault();
+
+        const trimmed = newUsername.trim();
+        const users = JSON.parse(localStorage.getItem('users')) || {};
+
+
+        if (!trimmed) {
+            setError("Username is required.");
+            return;
+        }
+
+        if (!newPassword) {
+            setError("Password is required.");
+            return;
+        }
+
+        if (users[trimmed]) {
+            setError("Username already exists.");
+            return;
+        }
+        users[trimmed] = {
+            username: trimmed,
+            password:newPassword,
+            bio: 'New user.',
+            picture: null,
+        }
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', trimmed);
+        localStorage.setItem("isLoggedIn", "true");
+        setIsLoggedIn(true);
+        setError('');
+        navigate('/profile');
+
+
+    };
     const handleLogout = () => {
         setIsLoggedIn(false);
         localStorage.removeItem("isLoggedIn");
@@ -50,34 +78,145 @@ function LoginPage() {
     // redirect if not logged in
     if (!isLoggedIn) {
         return (
-            <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md w-80">
-                    <h2 className="text-xl font-bold mb-4">Login</h2>
-                    {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+            <div
+                style={{textAlign: 'center', padding: '3rem'}}
+            >
+                <div style={{
+                    maxWidth: '320px',
+                    margin: '2rem auto 0',
+                    padding: '0 1rem',
+                }}>
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            border: '1px solid #d1d5db', // gray-300
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            padding: '16px',
+                            marginBottom: '24px',
+                            width: "370px",
+                        }}
+                    >
+                <form
+                    onSubmit={handleLogin}
+                    style={{
+                        backgroundColor: "white",
+                        padding: "24px",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        width: "320px",
+                    }}
+                >
+
+                    <h2 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "16px" }}>
+                        Login
+                    </h2>
+                    {error && (
+                        <p style={{ color: "red", fontSize: "0.875rem", marginBottom: "8px" }}>{error}</p>
+                    )}
                     <input
                         type="text"
                         placeholder="Username"
-                        className="w-full mb-3 p-2 border rounded"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        style={{
+                            width: "100%",
+                            marginBottom: "12px",
+                            padding: "8px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                        }}
                     />
                     <input
                         type="password"
                         placeholder="Password"
-                        className="w-full mb-3 p-2 border rounded"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        style={{
+                            width: "100%",
+                            marginBottom: "12px",
+                            padding: "8px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                        }}
                     />
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                        style={{
+                            width: "100%",
+                            backgroundColor: "#3b82f6", // blue-500 equivalent
+                            color: "white",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "none",
+                            cursor: "pointer",
+                        }}
+                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")} // blue-600 equivalent hover
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
                     >
                         Log In
                     </button>
                 </form>
+                <form onSubmit={handleCreateAccount} style={{
+                    backgroundColor: "white",
+                    padding: "24px",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                    width: "320px",
+                }}>
+                    <h2>Create Account</h2>
+                    {error && <p>{error}</p>}
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={newUsername}
+                        onChange={(e) => setNewUsername(e.target.value)}
+                        style={{
+                            width: "100%",
+                            marginBottom: "12px",
+                            padding: "8px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                        }}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        style={{
+                            width: "100%",
+                            marginBottom: "12px",
+                            padding: "8px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                        }}
+                    />
+
+                    <button
+                        type="submit"
+                        style={{
+                            width: "100%",
+                            backgroundColor: "#3b82f6", // blue-500 equivalent
+                            color: "white",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "none",
+                            cursor: "pointer",
+                        }}
+                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")} // blue-600 equivalent hover
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
+                    >
+                        Create Account
+                    </button>
+                </form>
             </div>
+        </div>
+    </div>
+
         );
     }
+
 
     // else show status
     return (
